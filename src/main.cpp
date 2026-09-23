@@ -51,13 +51,19 @@ void usercontrol(void) {
   while (1) {
     vex::wait(20, vex::msec);
     double L3 = Controller.Axis3.position(); // left stick vertical
-    double R2 = Controller.Axis2.position(); // right stick vertical
+    double R3 = Controller.Axis2.position(); // right stick vertical
     double L4 = Controller.Axis4.position(); // left stick horizontal
-    double R1 = Controller.Axis1.position(); // right stick horizontal
-
+    double R4 = Controller.Axis1.position(); // right stick horizontal
+    bool R1 = Controller.ButtonR1.pressing();
+    bool R2 = Controller.ButtonR2.pressing();
+    bool L1 = Controller.ButtonL1.pressing();
+    bool L2 = Controller.ButtonL2.pressing();
     // Drive motors
     LeftMotors.spin(vex::forward, L3, vex::percent);
     RightMotors.spin(vex::forward, R2, vex::percent);
+    //intake
+    if (R1) Intake.spin(vex::forward);
+    if (R2) Intake.spin(vex::reverse);
 
     //screen Debug
     BigBrain.Screen.clearScreen();

@@ -89,7 +89,7 @@ int DisplayMenu(const char* options[], vex::color colors[], int numOptions) {
 }
 
 void AutonSelector() {
-    // Step 1: Skills or No Skills
+    //Skills or No Skills
     const char* firstMenu[] = { "Skills", "No Skills" };
     vex::color firstColors[] = { vex::white, vex::blue };
     int choice = DisplayMenu(firstMenu, firstColors, 2);
@@ -97,12 +97,14 @@ void AutonSelector() {
     SelectedAutonMode = (choice == 0) ? Skills : NoSkills;
 
     if (SelectedAutonMode == NoSkills) {
-        //step 1: color menu
+        //Red or Blue
         const char* ColorMenu[] = { "Red", "Blue" };
         vex::color Colors[] = { vex::red, vex::blue };
         choice = DisplayMenu(ColorMenu, Colors, 2);
 
-        // Step 2: Match or Elims
+        SelectedColorSide = (choice == 0) ? Red : Blue;
+        
+        //Match or Elims
         const char* secondMenu[] = { "Match", "Elims" };
         vex::color secondColors[] = { vex::white, vex::blue };
         choice = DisplayMenu(secondMenu, secondColors, 2);
@@ -110,7 +112,7 @@ void AutonSelector() {
         SelectedMatchType = (choice == 0) ? Match : Elims;
 
         if (SelectedMatchType == Match) {
-            // Step 3a: Left / Right / AWP
+            //Left, Right, or AWP
             const char* matchMenu[] = { "Left", "AWP", "Right" };
             vex::color matchColors[] = { vex::blue, vex::white, vex::blue };
             choice = DisplayMenu(matchMenu, matchColors, 3);
@@ -121,7 +123,7 @@ void AutonSelector() {
 
         } 
         else {
-            // Step 3b: Elims Left / Right
+            //Left or Right
             const char* elimsMenu[] = { "Left", "Right" };
             vex::color elimsColors[] = { vex::white, vex::blue };
             choice = DisplayMenu(elimsMenu, elimsColors, 2);
@@ -130,33 +132,47 @@ void AutonSelector() {
         }
     }
 
-    // Final display
-    BigBrain.Screen.clearScreen();
-    BigBrain.Screen.setFont(vex::fontType::mono30);
-    BigBrain.Screen.setPenColor(vex::white);
-    BigBrain.Screen.setFillColor(vex::black);
+   // Final display
+BigBrain.Screen.clearScreen();
+BigBrain.Screen.setFont(vex::fontType::mono30);
+BigBrain.Screen.setPenColor(vex::white);
+BigBrain.Screen.setFillColor(vex::black);
 
-    if (SelectedAutonMode == Skills) {
-        BigBrain.Screen.printAt(40, 100, "Running Skills Autonomous");
+if (SelectedAutonMode == Skills) {
+    BigBrain.Screen.printAt(40, 100, "Running Skills Autonomous");
+}
+else {
+    // Display color
+    if (SelectedColorSide == Red) {
+        BigBrain.Screen.printAt(20, 50, "Red");
     }
-    if (SelectedColorSide == Red){
-        BigBrain.Screen.printAt(20, 100, "red side");
-    } else BigBrain.Screen.printAt(20,100, "blue");
-
-    if (SelectedMatchType == Match) {
-        BigBrain.Screen.printAt(60, 100, " Match: ");
-        if (SelectedAutoSide == LeftSide)
-            BigBrain.Screen.printAt(260, 100, "Left");
-        else if (SelectedAutoSide == RightSide)
-            BigBrain.Screen.printAt(260, 100, "Right");
-        else
-            BigBrain.Screen.printAt(260, 100, "AWP");
-        } 
     else {
-        BigBrain.Screen.printAt(60, 100, " Elims: ");
-    if (SelectedElimsSide == ELeft)
-        BigBrain.Screen.printAt(260, 100, "Left");
-    else
-        BigBrain.Screen.printAt(260, 100, "Right");
+        BigBrain.Screen.printAt(20, 50, "Blue");
     }
+
+    // Display match type
+    if (SelectedMatchType == Match) {
+        BigBrain.Screen.printAt(20, 100, "Match:");
+
+        if (SelectedAutoSide == LeftSide) {
+            BigBrain.Screen.printAt(150, 100, "Left");
+        }
+        else if (SelectedAutoSide == RightSide) {
+            BigBrain.Screen.printAt(150, 100, "Right");
+        }
+        else {
+            BigBrain.Screen.printAt(150, 100, "AWP");
+        }
+    }
+    else {
+        BigBrain.Screen.printAt(20, 100, "Elims:");
+
+        if (SelectedElimsSide == ELeft) {
+            BigBrain.Screen.printAt(150, 100, "Left");
+        }
+        else {
+            BigBrain.Screen.printAt(150, 100, "Right");
+        }
+    }
+}
 }

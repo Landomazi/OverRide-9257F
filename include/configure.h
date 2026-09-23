@@ -13,11 +13,12 @@ extern vex::controller Controller;
 extern vex::motor FrRight;
 extern vex::motor BaRight;
 extern vex::motor_group RightMotors;
-
 //Left Motors
 extern vex::motor FrLeft;
 extern vex::motor BaLeft;
 extern vex::motor_group LeftMotors;
+//Intake
+extern vex::motor Intake;
 //Sensors
 extern vex::inertial IMU1;
 extern vex::inertial IMU2;
