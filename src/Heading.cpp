@@ -30,5 +30,4 @@ double BotFacing() {
   double averageHeadingDeg = atan2(sumSin, sumCos) * 180.0 / M_PI;
   if (averageHeadingDeg < 0.0) averageHeadingDeg += 360.0;
   return averageHeadingDeg;
-
 } 

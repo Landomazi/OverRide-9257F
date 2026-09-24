@@ -132,7 +132,7 @@ void AutonSelector() {
         }
     }
 
-   // Final display
+// Final display
 BigBrain.Screen.clearScreen();
 BigBrain.Screen.setFont(vex::fontType::mono30);
 BigBrain.Screen.setPenColor(vex::white);
