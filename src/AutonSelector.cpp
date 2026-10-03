@@ -130,7 +130,7 @@ void AutonSelector() {
 
             SelectedElimsSide = (choice == 0) ? ELeft : ERight;
         }
-    }
+}
 
 // Final display
 BigBrain.Screen.clearScreen();

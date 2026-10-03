@@ -4,17 +4,16 @@
 #include "angle.h"
 
 void DriveStraight(double TargetMovement, double maxSpeed, double timeoutSec) {
-    // 1. Distance PID Constants (Tune these!)
-    double kP = 5.0; 
-    double kI = 0.0;
-    double kD = 0.1;
+    double kP = 0;
+    double kI = 0;
+    double kD = 0;
 
     double error = 0;
     double prevError = 0;
     double integral = 0;
     double derivative = 0;
 
-    double wheelDiameter = 3.25;
+    double wheelDiameter = 2;
     double wheelCircumference = wheelDiameter * M_PI;
 
     LeftMotors.resetPosition();
@@ -25,8 +24,8 @@ void DriveStraight(double TargetMovement, double maxSpeed, double timeoutSec) {
 
     while (true) {
         // Calculate current distance traveled in inches
-        double avgDegrees = (LeftMotors.position(vex::degrees) + RightMotors.position(vex::degrees)) / 2.0;
-        double CurrentPosition = (avgDegrees / 360.0) * wheelCircumference;
+        double Degrees = Ypod.angle(vex::degrees);
+        double CurrentPosition = (Degrees / 360.0) * wheelCircumference;
         
         error = TargetMovement - CurrentPosition;
 
@@ -47,7 +46,7 @@ void DriveStraight(double TargetMovement, double maxSpeed, double timeoutSec) {
         if (moveSpeed < -maxSpeed) moveSpeed = -maxSpeed;
 
         // Minimum power to overcome drivetrain friction
-        if (fabs(moveSpeed) < 7.0 && fabs(error) > 0.5) {
+        if (fabs(moveSpeed) < 7.0 && fabs(error) > 0.25) {
             moveSpeed = (moveSpeed > 0) ? 7.0 : -7.0;
         }
 
@@ -61,10 +60,9 @@ void DriveStraight(double TargetMovement, double maxSpeed, double timeoutSec) {
         prevError = error;
 
         // Exit conditions: Within 0.3 inches of target OR user-defined timeout reached
-        if (fabs(error) < 0.3 || t.time(vex::sec) > timeoutSec) {
+        if (fabs(error) < 0.25 || t.time(vex::sec) > timeoutSec) {
             break;
         }
-
         vex::wait(20, vex::msec);
     }
 

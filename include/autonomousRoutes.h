@@ -3,6 +3,8 @@
 /*    Author:       Landon.kiely                                              */
 /*----------------------------------------------------------------------------*/
 #pragma once
+#include "Turn.h";
+
 //Quals
 void AutonomousSkills();
 void AWP();

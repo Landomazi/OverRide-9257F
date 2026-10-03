@@ -4,13 +4,13 @@
 #include "angle.h"
 #include <cmath>
 
-void TurnToHeading( double TargetTheta, double MaxSpeed, int Timeout) {
-    double kP = 0;
+void TurnToHeading(double TargetTheta, double MaxSpeed, int Timeout) {
+    double kP = 0.8;
     double kI = 0;
-    double kD = 0;
+    double kD = 3;
 
     double error = 0;
-    double prevError = 0;
+    double prevError = angleWrap(TargetTheta - BotFacing());
     double integral = 0;
     double derivative = 0;
 
@@ -19,9 +19,11 @@ void TurnToHeading( double TargetTheta, double MaxSpeed, int Timeout) {
 
     while (t.time(vex::msec) < Timeout) {
 
-        error = angleWrap(TargetTheta - BotFacing());
+        double currentHeading = BotFacing();
 
-        if (fabs(error) < 1.0) break;  // exit if close enough
+        error = angleWrap(TargetTheta - currentHeading);
+
+        if (fabs(error) < 1.0) break;
 
         integral += error;
         derivative = error - prevError;
@@ -29,7 +31,6 @@ void TurnToHeading( double TargetTheta, double MaxSpeed, int Timeout) {
 
         double motorPower = kP * error + kI * integral + kD * derivative;
 
-        // clamp speed
         if (motorPower > MaxSpeed) motorPower = MaxSpeed;
         if (motorPower < -MaxSpeed) motorPower = -MaxSpeed;
 
@@ -39,7 +40,6 @@ void TurnToHeading( double TargetTheta, double MaxSpeed, int Timeout) {
         vex::task::sleep(10);
     }
 
-    // stop drivetrain
     LeftMotors.stop(vex::brake);
     RightMotors.stop(vex::brake);
 }

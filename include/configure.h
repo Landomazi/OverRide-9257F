@@ -19,6 +19,13 @@ extern vex::motor BaLeft;
 extern vex::motor_group LeftMotors;
 //Intake
 extern vex::motor Intake;
+
+//lift
+extern vex::motor LeftLift;
+extern vex::motor RightLift;
+extern vex::motor_group Lift;
 //Sensors
 extern vex::inertial IMU1;
 extern vex::inertial IMU2;
+extern vex::rotation Ypod;
+extern vex::rotation LiftReader;
