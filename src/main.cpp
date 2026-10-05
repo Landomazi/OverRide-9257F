@@ -10,12 +10,13 @@
 #include "Heading.h"
 
 void pre_auton(void) {
-  IMU1.resetHeading();
+  IMU1.resetHeading();  
   IMU1.calibrate();
   IMU2.resetHeading();
   IMU2.calibrate();
   Intake.resetPosition();
   Intake.setVelocity(100,vex::percent);
+  Lift.setVelocity(100, vex::percent);
   Ypod.resetPosition();
   LiftReader.resetPosition();
   LeftMotors.resetPosition();
@@ -26,7 +27,7 @@ void pre_auton(void) {
 }
 
 void autonomous(void) {
- /*if (SelectedAutonMode == Skills) {
+ if (SelectedAutonMode == Skills) {
     AutonomousSkills();
   } else if (SelectedMatchType == Match && SelectedColorSide == Red) {
     if (SelectedAutoSide == LeftSide) {
@@ -56,12 +57,12 @@ void autonomous(void) {
     } else if (SelectedElimsSide == ERight) {
       ElimsBlueRight();
     }
-  }*/
-  TurnToHeading(90,100,2000);
-  TurnToHeading(180,100,2000);
+  }
 }
 
 void usercontrol(void) {
+    bool ClawEngaged = false;
+    bool ClawPosition = false;
   while (1) {
     vex::wait(20, vex::msec);
     double L3 = Controller.Axis3.position(); // left stick vertical
@@ -72,29 +73,45 @@ void usercontrol(void) {
     bool R2 = Controller.ButtonR2.pressing();
     bool L1 = Controller.ButtonL1.pressing();
     bool L2 = Controller.ButtonL2.pressing();
+    bool Up = Controller.ButtonUp.pressing();
+    bool Down = Controller.ButtonDown.pressing();
+    bool Left = Controller.ButtonLeft.pressing();
+    bool Right = Controller.ButtonRight.pressing();
+    bool Y = Controller.ButtonY.pressing();
+    bool X = Controller.ButtonX.pressing();
+    bool A = Controller.ButtonA.pressing();
+    bool B = Controller.ButtonB.pressing();
+    
     // Drive motors
-    LeftMotors.spin(vex::forward, L3, vex::percent);
-    RightMotors.spin(vex::forward, R3, vex::percent);
+    LeftMotors.spin(vex::reverse, R3, vex::percent);
+    RightMotors.spin(vex::reverse, L3, vex::percent);
     //intake
-    if (R1) Intake.spin(vex::forward,100,vex::percent);
-    else if (R2) Intake.spin(vex::reverse,100,vex::percent);
-    else Intake.stop();
+    //if (R1) Intake.spin(vex::forward,100,vex::percent);
+    //else if (R2) Intake.spin(vex::reverse,50,vex::percent);
+    //else Intake.stop();
 
     //lift
-    if (L1 && LiftReader.angle(vex::degrees) >= 0) Lift.spin(vex::forward, 100, vex::percent);
-    else if (L2 && LiftReader.angle(vex::degrees) >= 0) Lift.spin(vex::reverse, 100, vex::percent);
+    if (L1 && LiftReader.angle(vex::degrees) <= 360 && LiftReader.angle(vex::degrees) >= 0) Lift.spin(vex::forward, 100, vex::percent);
+    else if (L2 && LiftReader.angle(vex::degrees) >= 0 && LiftReader.angle(vex::degrees) <= 360) Lift.spin(vex::reverse, 100, vex::percent);
     else Lift.stop(vex::hold);
+
+    // descore  mechanism
+    if( Y && !ClawEngaged) {
+      ClawPosition = !ClawPosition;
+      ClawPiston.set(ClawPosition);
+    }
+    ClawEngaged = Y;
 
     //screen Debug
     BigBrain.Screen.clearScreen();
     BigBrain.Screen.setCursor(1,1);
     BigBrain.Screen.print("Drive L: %.1f  R: %.1f", L3, R3);
     BigBrain.Screen.newLine();
-    BigBrain.Screen.print("Headings position1:%d  position2:%d", IMU1.heading(vex::degrees), IMU2.heading(vex::degrees));
+    BigBrain.Screen.print("Headings position1:%d  position2:%d", (double)IMU1.heading(vex::degrees), (double)IMU2.heading(vex::degrees));
     BigBrain.Screen.newLine();
-    BigBrain.Screen.print("Averaged Heading:%d",BotFacing());
+    BigBrain.Screen.print("Averaged Heading:%d",(double)BotFacing());
     BigBrain.Screen.newLine();
-    BigBrain.Screen.print("Lift Degrees:%d",LiftReader.position(vex::degrees));
+    BigBrain.Screen.print("Lift Degrees:%d",(double)LiftReader.position(vex::degrees));
   }
 }
 

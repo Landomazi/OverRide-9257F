@@ -30,8 +30,11 @@ vex::motor LiftLeft = vex::motor(vex::PORT6, vex::ratio18_1, false);
 vex::motor LiftRight = vex::motor(vex::PORT7, vex::ratio18_1, true );
 vex::motor_group Lift = vex::motor_group(LiftLeft, LiftRight);
 
+//piston
+vex::pneumatics ClawPiston = vex::pneumatics(BigBrain.ThreeWirePort.A);
+
 //Sensors
 vex::inertial IMU1(vex::PORT14);
 vex::inertial IMU2(vex::PORT21);
-vex::rotation Ypod = vex::rotation(vex::PORT7, false);
+vex::rotation Ypod = vex::rotation(vex::PORT2, true);
 vex::rotation LiftReader = vex::rotation(vex::PORT1,true);

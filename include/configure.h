@@ -19,7 +19,8 @@ extern vex::motor BaLeft;
 extern vex::motor_group LeftMotors;
 //Intake
 extern vex::motor Intake;
-
+//piston
+extern vex::pneumatics ClawPiston;
 //lift
 extern vex::motor LeftLift;
 extern vex::motor RightLift;
