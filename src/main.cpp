@@ -7,7 +7,6 @@
 #include "vex.h"
 #include "autonSelector.h"
 #include "autonomousRoutes.h"
-#include "Heading.h"
 
 void pre_auton(void) {
   IMU1.resetHeading();  
@@ -29,33 +28,19 @@ void pre_auton(void) {
 void autonomous(void) {
  if (SelectedAutonMode == Skills) {
     AutonomousSkills();
-  } else if (SelectedMatchType == Match && SelectedColorSide == Red) {
+  } else if (SelectedMatchType == Match) {
     if (SelectedAutoSide == LeftSide) {
-      AutonomousRedLeft();
+      AutonomousLeft();
     } else if (SelectedAutoSide == RightSide) {
-      AutonomousRedRight();
+      AutonomousRight();
     } else if (SelectedAutoSide == AWPoint) {
       AWP();
     }
-  } else if (SelectedMatchType == Elims && SelectedColorSide == Red) {
+  } else if (SelectedMatchType == Elims) {
     if (SelectedElimsSide == ELeft) {
-      ElimsRedLeft();
+      ElimsLeft();
     } else if (SelectedElimsSide == ERight) {
-      ElimsRedRight();
-    }
-  } else if (SelectedMatchType == Match && SelectedColorSide == Blue) {
-    if (SelectedAutoSide == LeftSide) {
-      AutonomousBlueLeft();
-    } else if (SelectedAutoSide == RightSide) {
-      AutonomousBlueRight();
-    } else if (SelectedAutoSide == AWPoint) {
-      AWP();
-    }
-  } else if (SelectedMatchType == Elims && SelectedColorSide == Blue) {
-    if (SelectedElimsSide == ELeft) {
-      ElimsBlueLeft();
-    } else if (SelectedElimsSide == ERight) {
-      ElimsBlueRight();
+      ElimsRight();
     }
   }
 }
@@ -112,9 +97,9 @@ void usercontrol(void) {
     BigBrain.Screen.print("Averaged Heading:%d",(double)BotFacing());
     BigBrain.Screen.newLine();
     BigBrain.Screen.print("Lift Degrees:%d",(double)LiftReader.position(vex::degrees));
+    //PrintOdom();
   }
 }
-
 
 int main() {
   pre_auton();

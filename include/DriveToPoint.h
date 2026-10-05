@@ -1,17 +1,7 @@
 /*----------------------------------------------------------------------------*/
-/*    Module:       autonomousRoutes.h                                        */
+/*    Module:       DriveToPoint.h                                            */
 /*    Author:       Landon.kiely                                              */
 /*----------------------------------------------------------------------------*/
 #pragma once
 
-//skills
-void AutonomousSkills();
-
-//Quals
-void AWP();
-void AutonomousRight();
-void AutonomousLeft();
-
-//elims
-void ElimsRight();
-void ElimsLeft();
+void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout);

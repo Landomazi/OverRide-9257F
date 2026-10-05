@@ -1,7 +1,8 @@
+/*----------------------------------------------------------------------------*/
+/*    Module:       Turn.cpp                                                  */
+/*    Author:       Landon.kiely                                              */
+/*----------------------------------------------------------------------------*/
 #include "vex.h"
-#include "Configure.h"
-#include "Heading.h"
-#include "angle.h"
 #include <cmath>
 
 void TurnToHeading(double TargetTheta, double MaxSpeed, int Timeout) {

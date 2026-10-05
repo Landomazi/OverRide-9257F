@@ -1,13 +1,18 @@
+/*----------------------------------------------------------------------------*/
+/*    Module:       Drive.cpp                                                 */
+/*    Author:       Landon.kiely                                              */
+/*----------------------------------------------------------------------------*/
+
 #include "vex.h" 
 #include "Configure.h" 
 #include "Heading.h" 
 #include "angle.h"
 
 
-void DriveStraight(double TargetMovement, double maxSpeed, double timeout) { 
+void Drive(double TargetMovement, double maxSpeed, double timeout) { 
     double kP = 3.25; 
     double kI = 0.08; 
-    double kD = 2.0; 
+    double kD = 2.00; 
  
     double error = 0; 
     double prevError = TargetMovement; 
@@ -33,7 +38,7 @@ void DriveStraight(double TargetMovement, double maxSpeed, double timeout) {
             integral += error; 
         } else { 
             integral = 0; 
-        } 
+        }
          
         derivative = error - prevError; 
  
@@ -57,10 +62,9 @@ void DriveStraight(double TargetMovement, double maxSpeed, double timeout) {
         if (fabs(error) < 0.25 || t.time(vex::msec) > timeout) { 
             break; 
         } 
- 
+        
         vex::wait(20, vex::msec); 
-    } 
- 
+    }
     LeftMotors.stop(vex::brake); 
     RightMotors.stop(vex::brake); 
 }

@@ -1,3 +1,7 @@
+/*----------------------------------------------------------------------------*/
+/*    Module:       Vex.h                                                     */
+/*    Author:       Landon.kiely                                              */
+/*----------------------------------------------------------------------------*/
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +10,10 @@
 #include "v5.h"
 #include "v5_vcs.h"
 #include "Configure.h"
+#include "OdomTracking.h"
+#include "Heading.h"
+#include "angle.h"
+
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
