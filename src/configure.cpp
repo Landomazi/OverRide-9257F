@@ -18,7 +18,7 @@ vex::motor BaRight = vex::motor( vex::PORT12, vex::ratio6_1, true);
 vex::motor_group RightMotors = vex::motor_group(FrRight, BaRight);
 
 //Left motors
-vex::motor FrLeft = vex::motor( vex::PORT20, vex::ratio6_1, false);
+vex::motor FrLeft = vex::motor( vex::PORT16, vex::ratio6_1, false);
 vex::motor BaLeft = vex::motor( vex::PORT19, vex::ratio6_1, false);
 vex::motor_group LeftMotors= vex::motor_group(FrLeft, BaLeft);
 
@@ -36,6 +36,5 @@ vex::pneumatics ClawPiston = vex::pneumatics(BigBrain.ThreeWirePort.A);
 //Sensors
 vex::inertial IMU1(vex::PORT14);
 vex::inertial IMU2(vex::PORT21);
-vex::rotation Ypod = vex::rotation(vex::PORT2, true);
-
-vex::rotation LiftReader = vex::rotation(vex::PORT1,true);
+vex::rotation Ypod = vex::rotation(vex::PORT3, true);
+vex::rotation LiftReader = vex::rotation(vex::PORT2,true);

@@ -13,19 +13,23 @@ Side SelectedAutoSide;
 ElimsSide SelectedElimsSide;
 
 // Wait for screen press and return encoded x and y
-int WaitForPress() {
-    while (!BigBrain.Screen.pressing()) {
-       vex::task::sleep(20);
-    }
+int WaitForPress()
+{
+    while (!BigBrain.Screen.pressing())
+    {
+        vex::task::sleep(20);
+    } // end while
     int x = BigBrain.Screen.xPosition();
     int y = BigBrain.Screen.yPosition();
-    while (BigBrain.Screen.pressing()) {
+    while (BigBrain.Screen.pressing())
+    {
         vex::task::sleep(20);
-    }
+    } // end while
     return (x << 16) | y;
-}
+} // end WaitForPress
 
-int DisplayMenu(const char* options[], vex::color colors[], int numOptions) {
+int DisplayMenu(const char *options[], vex::color colors[], int numOptions)
+{
     BigBrain.Screen.clearScreen();
     BigBrain.Screen.setFont(vex::fontType::mono30);
     BigBrain.Screen.setPenColor(vex::black);
@@ -36,13 +40,15 @@ int DisplayMenu(const char* options[], vex::color colors[], int numOptions) {
     int height[numOptions];
 
     // full screen split layout
-    if (numOptions == 2 || numOptions == 3) {
+    if (numOptions == 2 || numOptions == 3)
+    {
         int buttonWidth = 480 / numOptions;
 
-        for (int i = 0; i < numOptions; i++) {
+        for (int i = 0; i < numOptions; i++)
+        {
             startX[i] = i * buttonWidth;
             startY[i] = 0;
-            width[i]  = buttonWidth;
+            width[i] = buttonWidth;
             height[i] = 240;
 
             BigBrain.Screen.setFillColor(colors[i]);
@@ -51,19 +57,20 @@ int DisplayMenu(const char* options[], vex::color colors[], int numOptions) {
             BigBrain.Screen.printAt(
                 startX[i] + (width[i] / 2) - 60,
                 startY[i] + (height[i] / 2),
-                options[i]
-            );
-        }
-    }
+                options[i]);
+        } // end for loop
+    } // end if statemet
     // fallback layout for anything else
-    else {
+    else
+    {
         int x = 40;
         int y = 80;
 
-        for (int i = 0; i < numOptions; i++) {
+        for (int i = 0; i < numOptions; i++)
+        {
             startX[i] = x;
             startY[i] = y;
-            width[i]  = 150;
+            width[i] = 150;
             height[i] = 150;
 
             BigBrain.Screen.setFillColor(colors[i]);
@@ -71,108 +78,114 @@ int DisplayMenu(const char* options[], vex::color colors[], int numOptions) {
             BigBrain.Screen.printAt(x + 15, y + 80, options[i]);
 
             x += 160;
-        }
-    }
+        } // end for loop
+    } // end else statement
 
-    while (true) {
+    while (true)
+    {
         int xy = WaitForPress();
         int px = xy >> 16;
         int py = xy & 0xFFFF;
 
-        for (int i = 0; i < numOptions; i++) {
+        for (int i = 0; i < numOptions; i++)
+        {
             if (px >= startX[i] && px <= startX[i] + width[i] &&
-                py >= startY[i] && py <= startY[i] + height[i]) {
+                py >= startY[i] && py <= startY[i] + height[i])
+            {
                 return i;
-            }
-        }
-    }
-}
+            } // end if statement
+        } // end for loop
+    } // end while loop
+} // end DisplayMenu
 
 void AutonSelector() {
-    //Skills or No Skills
-    const char* firstMenu[] = { "Skills", "No Skills" };
-    vex::color firstColors[] = { vex::white, vex::blue };
+    // Skills or No Skills
+    const char *firstMenu[] = {"Skills", "No Skills"};
+    vex::color firstColors[] = {vex::white, vex::blue};
     int choice = DisplayMenu(firstMenu, firstColors, 2);
 
     SelectedAutonMode = (choice == 0) ? Skills : NoSkills;
 
     if (SelectedAutonMode == NoSkills) {
-        //Red or Blue
-        const char* ColorMenu[] = { "Red", "Blue" };
-        vex::color Colors[] = { vex::red, vex::blue };
+        // Red or Blue
+        const char *ColorMenu[] = {"Red", "Blue"};
+        vex::color Colors[] = {vex::red, vex::blue};
         choice = DisplayMenu(ColorMenu, Colors, 2);
 
         SelectedColorSide = (choice == 0) ? Red : Blue;
-        
-        //Match or Elims
-        const char* secondMenu[] = { "Match", "Elims" };
-        vex::color secondColors[] = { vex::white, vex::blue };
+
+        // Match or Elims
+        const char *secondMenu[] = {"Match", "Elims"};
+        vex::color secondColors[] = {vex::white, vex::blue};
         choice = DisplayMenu(secondMenu, secondColors, 2);
 
         SelectedMatchType = (choice == 0) ? Match : Elims;
 
         if (SelectedMatchType == Match) {
-            //Left, Right, or AWP
-            const char* matchMenu[] = { "Left", "AWP", "Right" };
-            vex::color matchColors[] = { vex::blue, vex::white, vex::blue };
+            // Left, Right, or AWP
+            const char *matchMenu[] = {"Left", "AWP", "Right"};
+            vex::color matchColors[] = {vex::blue, vex::white, vex::blue};
             choice = DisplayMenu(matchMenu, matchColors, 3);
 
-            if (choice == 0) SelectedAutoSide = LeftSide;
-            else if (choice == 1) SelectedAutoSide = AWPoint;
-            else SelectedAutoSide = RightSide;
+            if (choice == 0)
+                SelectedAutoSide = LeftSide;
+            else if (choice == 1)
+                SelectedAutoSide = AWPoint;
+            else
+                SelectedAutoSide = RightSide;
 
-        } 
+        } // end if statement
         else {
-            //Left or Right
-            const char* elimsMenu[] = { "Left", "Right" };
-            vex::color elimsColors[] = { vex::white, vex::blue };
+            // Left or Right
+            const char *elimsMenu[] = {"Left", "Right"};
+            vex::color elimsColors[] = {vex::white, vex::blue};
             choice = DisplayMenu(elimsMenu, elimsColors, 2);
 
             SelectedElimsSide = (choice == 0) ? ELeft : ERight;
-        }
-}
+        } // end else statement
+    } // end if statement
 
-// Final display
-BigBrain.Screen.clearScreen();
-BigBrain.Screen.setFont(vex::fontType::mono30);
-BigBrain.Screen.setPenColor(vex::white);
-BigBrain.Screen.setFillColor(vex::black);
+    // Final display
+    BigBrain.Screen.clearScreen();
+    BigBrain.Screen.setFont(vex::fontType::mono30);
+    BigBrain.Screen.setPenColor(vex::white);
+    BigBrain.Screen.setFillColor(vex::black);
 
-if (SelectedAutonMode == Skills) {
-    BigBrain.Screen.printAt(40, 100, "Running Skills Autonomous");
-}
-else {
-    // Display color
-    if (SelectedColorSide == Red) {
-        BigBrain.Screen.printAt(20, 50, "Red");
-    }
+    if (SelectedAutonMode == Skills) {
+        BigBrain.Screen.printAt(40, 100, "Running Skills Autonomous");
+    } // end if statement
     else {
-        BigBrain.Screen.printAt(20, 50, "Blue");
-    }
-
-    // Display match type
-    if (SelectedMatchType == Match) {
-        BigBrain.Screen.printAt(20, 100, "Match:");
-
-        if (SelectedAutoSide == LeftSide) {
-            BigBrain.Screen.printAt(150, 100, "Left");
-        }
-        else if (SelectedAutoSide == RightSide) {
-            BigBrain.Screen.printAt(150, 100, "Right");
-        }
+        // Display color
+        if (SelectedColorSide == Red) {
+            BigBrain.Screen.printAt(20, 50, "Red");
+        } // end if statement
         else {
-            BigBrain.Screen.printAt(150, 100, "AWP");
-        }
-    }
-    else {
-        BigBrain.Screen.printAt(20, 100, "Elims:");
+            BigBrain.Screen.printAt(20, 50, "Blue");
+        } // end else statement
 
-        if (SelectedElimsSide == ELeft) {
-            BigBrain.Screen.printAt(150, 100, "Left");
-        }
+        // Display match type
+        if (SelectedMatchType == Match) {
+            BigBrain.Screen.printAt(20, 100, "Match:");
+
+            if (SelectedAutoSide == LeftSide) {
+                BigBrain.Screen.printAt(150, 100, "Left");
+            } // end if
+            else if (SelectedAutoSide == RightSide) {
+                BigBrain.Screen.printAt(150, 100, "Right");
+            } // end else if
+            else {
+                BigBrain.Screen.printAt(150, 100, "AWP");
+            } // end else
+        } // end if statement
         else {
-            BigBrain.Screen.printAt(150, 100, "Right");
-        }
-    }
-}
-}
+            BigBrain.Screen.printAt(20, 100, "Elims:");
+
+            if (SelectedElimsSide == ELeft) {
+                BigBrain.Screen.printAt(150, 100, "Left");
+            } // end if
+            else {
+                BigBrain.Screen.printAt(150, 100, "Right");
+            } // end else
+        } // end else
+    }//end else
+}//end auto selector

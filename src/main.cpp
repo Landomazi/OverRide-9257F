@@ -7,47 +7,54 @@
 #include "vex.h"
 #include "autonSelector.h"
 #include "autonomousRoutes.h"
+#include "LiftControls.h"
 
-void pre_auton(void) {
-  IMU1.resetHeading();  
+void PreAuton(void) {
+  IMU1.resetHeading();
   IMU1.calibrate();
   IMU2.resetHeading();
   IMU2.calibrate();
   Intake.resetPosition();
-  Intake.setVelocity(100,vex::percent);
+  Intake.setVelocity(100, vex::percent);
   Lift.setVelocity(100, vex::percent);
   Ypod.resetPosition();
   LiftReader.resetPosition();
+  Lift.resetPosition();
   LeftMotors.resetPosition();
   RightMotors.resetPosition();
-  LeftMotors.setVelocity(100,vex::percent);
-  RightMotors.setVelocity(100,vex::percent);
+  LeftMotors.setVelocity(100, vex::percent);
+  RightMotors.setVelocity(100, vex::percent);
   AutonSelector();
-}
+}// end PreAuton
 
-void autonomous(void) {
- if (SelectedAutonMode == Skills) {
+void Autonomous(void) {
+  if (SelectedAutonMode == Skills) {
     AutonomousSkills();
-  } else if (SelectedMatchType == Match) {
+  }//end if loop
+  else if (SelectedMatchType == Match) {
     if (SelectedAutoSide == LeftSide) {
       AutonomousLeft();
-    } else if (SelectedAutoSide == RightSide) {
+    }//end if loop 
+    else if (SelectedAutoSide == RightSide) {
       AutonomousRight();
-    } else if (SelectedAutoSide == AWPoint) {
+    }//end else if
+    else if (SelectedAutoSide == AWPoint) {
       AWP();
-    }
-  } else if (SelectedMatchType == Elims) {
+    }//end else if
+  }//end else if
+  else if (SelectedMatchType == Elims) {
     if (SelectedElimsSide == ELeft) {
       ElimsLeft();
-    } else if (SelectedElimsSide == ERight) {
+    }//end if
+    else if (SelectedElimsSide == ERight) {
       ElimsRight();
-    }
-  }
-}
+    }//end else if
+  }//end else if
+}//end autonomous
 
-void usercontrol(void) {
-    bool ClawEngaged = false;
-    bool ClawPosition = false;
+void UserControl(void) {
+  bool ClawEngaged = false;
+  bool ClawPosition = false;
   while (1) {
     vex::wait(20, vex::msec);
     double L3 = Controller.Axis3.position(); // left stick vertical
@@ -66,46 +73,45 @@ void usercontrol(void) {
     bool X = Controller.ButtonX.pressing();
     bool A = Controller.ButtonA.pressing();
     bool B = Controller.ButtonB.pressing();
-    
-    // Drive motors
-    LeftMotors.spin(vex::reverse, R3, vex::percent);
-    RightMotors.spin(vex::reverse, L3, vex::percent);
-    //intake
-    //if (R1) Intake.spin(vex::forward,100,vex::percent);
-    //else if (R2) Intake.spin(vex::reverse,50,vex::percent);
-    //else Intake.stop();
 
-    //lift
-    if (L1 && LiftReader.angle(vex::degrees) <= 360 && LiftReader.angle(vex::degrees) >= 0) Lift.spin(vex::forward, 100, vex::percent);
-    else if (L2 && LiftReader.angle(vex::degrees) >= 0 && LiftReader.angle(vex::degrees) <= 360) Lift.spin(vex::reverse, 100, vex::percent);
-    else Lift.stop(vex::hold);
+    LiftControls();
+
+    // Drive motors
+    LeftMotors.spin(vex::forward, L3, vex::percent);
+    RightMotors.spin(vex::forward, R3, vex::percent);
+
+    //intake
+    if (R1) Intake.spin(vex::forward,100,vex::percent);
+    else if (R2) Intake.spin(vex::reverse,100,vex::percent);
+    else Intake.stop();
+
 
     // descore  mechanism
-    if( Y && !ClawEngaged) {
+    if (Y && !ClawEngaged) {
       ClawPosition = !ClawPosition;
       ClawPiston.set(ClawPosition);
-    }
+    }//end if statement
     ClawEngaged = Y;
 
-    //screen Debug
+    // screen Debug
     BigBrain.Screen.clearScreen();
-    BigBrain.Screen.setCursor(1,1);
+    BigBrain.Screen.setCursor(1, 1);
     BigBrain.Screen.print("Drive L: %.1f  R: %.1f", L3, R3);
     BigBrain.Screen.newLine();
     BigBrain.Screen.print("Headings position1:%d  position2:%d", (double)IMU1.heading(vex::degrees), (double)IMU2.heading(vex::degrees));
     BigBrain.Screen.newLine();
-    BigBrain.Screen.print("Averaged Heading:%d",(double)BotFacing());
+    BigBrain.Screen.print("Averaged Heading:%d", (double)BotFacing());
     BigBrain.Screen.newLine();
-    BigBrain.Screen.print("Lift Degrees:%d",(double)LiftReader.position(vex::degrees));
-    //PrintOdom();
-  }
-}
+    BigBrain.Screen.print("Lift Degrees:%d", (double)LiftReader.position(vex::degrees));
+    // PrintOdom();
+  }//end while loop
+}//end usercontrol
 
 int main() {
-  pre_auton();
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
+  PreAuton();
+  Competition.autonomous(Autonomous);
+  Competition.drivercontrol(UserControl);
   while (true) {
     vex::wait(100, vex::msec);
-  }
-}
+  }//end while loop
+}//end main

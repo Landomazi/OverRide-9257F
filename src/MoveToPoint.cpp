@@ -5,14 +5,14 @@
 
 #include "vex.h"
 
-void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout) {
-    //KP and KD
+void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout)
+{
+    // KP and KD
     double kP_linear = 0.00;
     double kD_linear = 0.00;
 
     double kP_angular = 0.00;
     double kD_angular = 0.00;
-
 
     const double minDrivePower = 6.0;
     const double minTurnPower = 4.0;
@@ -23,10 +23,11 @@ void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout) {
     double error_angular = 0;
     double last_error_angular = 0;
 
-    vex::timer t; 
-    t.reset(); 
+    vex::timer t;
+    t.reset();
 
-    while (t.time(vex::msec) < timeout) {
+    while (t.time(vex::msec) < timeout)
+    {
 
         UpdateOdom();
 
@@ -37,16 +38,18 @@ void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout) {
 
         double adjustedMaxSpeed = maxSpeed;
 
-    if(distance < 8.0){
-        adjustedMaxSpeed = maxSpeed * 0.30;
-    }
+        if (distance < 8.0)
+        {
+            adjustedMaxSpeed = maxSpeed * 0.30;
+        }
 
         // FIXED atan2 order
         double targetTheta = atan2(deltaX, deltaY) * 180.0 / M_PI;
 
         double headingError = angleWrap(targetTheta - globalHeading);
 
-        if(distance < 0.1) break;
+        if (distance < 0.1)
+            break;
 
         // UPDATE ERRORS FIRST
         error_linear = distance;
@@ -54,7 +57,6 @@ void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout) {
 
         double derivative_linear = (error_linear - last_error_linear);
         double derivative_angular = angleWrap(error_angular - last_error_angular);
-
 
         last_error_linear = error_linear;
         last_error_angular = error_angular;
@@ -73,21 +75,26 @@ void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout) {
         double headingScale = clamp(cos(errorAngularRad), 0.12, 1.0);
         forwardPower *= headingScale;
 
-        if (fabs(error_angular) > 30.0) {
+        if (fabs(error_angular) > 30.0)
+        {
             double maxForwardWhileTurning = maxSpeed * 0.45;
             forwardPower = clamp(forwardPower,
                                  -maxForwardWhileTurning,
                                  maxForwardWhileTurning);
         }
 
-        if (fabs(forwardPower) < minDrivePower && fabs(error_linear) > 1.0) {
+        if (fabs(forwardPower) < minDrivePower && fabs(error_linear) > 1.0)
+        {
             forwardPower = (forwardPower >= 0.0)
-                ? minDrivePower : -minDrivePower;
+                               ? minDrivePower
+                               : -minDrivePower;
         }
 
-        if (fabs(turnPower) < minTurnPower && fabs(error_angular) > 2.0) {
+        if (fabs(turnPower) < minTurnPower && fabs(error_angular) > 2.0)
+        {
             turnPower = (turnPower >= 0.0)
-                ? minTurnPower : -minTurnPower;
+                            ? minTurnPower
+                            : -minTurnPower;
         }
 
         forwardPower = clamp(forwardPower, -adjustedMaxSpeed, adjustedMaxSpeed);
@@ -99,7 +106,8 @@ void MoveToPoint(double targetX, double targetY, double maxSpeed, int timeout) {
         double ratio =
             max(fabs(leftPower), fabs(rightPower)) / adjustedMaxSpeed;
 
-        if (ratio > 1.0) {
+        if (ratio > 1.0)
+        {
             leftPower /= ratio;
             rightPower /= ratio;
         }

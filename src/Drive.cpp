@@ -38,7 +38,7 @@ void Drive(double TargetMovement, double maxSpeed, double timeout) {
             integral += error; 
         } else { 
             integral = 0; 
-        }
+        }//end if statement
          
         derivative = error - prevError; 
  
@@ -46,10 +46,6 @@ void Drive(double TargetMovement, double maxSpeed, double timeout) {
  
         if (moveSpeed > maxSpeed) moveSpeed = maxSpeed; 
         if (moveSpeed < -maxSpeed) moveSpeed = -maxSpeed; 
- 
-        //if (fabs(moveSpeed) < 7.0 && fabs(error) > 0.25) { 
-        //    moveSpeed = (moveSpeed > 0) ? 7.0 : -7.0; 
-        //} 
  
         double leftSpeed = clamp(moveSpeed, -maxSpeed, maxSpeed); 
         double rightSpeed = clamp(moveSpeed, -maxSpeed, maxSpeed); 
@@ -61,10 +57,10 @@ void Drive(double TargetMovement, double maxSpeed, double timeout) {
  
         if (fabs(error) < 0.25 || t.time(vex::msec) > timeout) { 
             break; 
-        } 
+        }//end if statement
         
         vex::wait(20, vex::msec); 
-    }
+    }//end while loop
     LeftMotors.stop(vex::brake); 
     RightMotors.stop(vex::brake); 
-}
+}//end drive function
